@@ -15,9 +15,9 @@ public class DbTest {
         //4. 패스워드
         //5. 인스턴스
 
-        String url = "jdbc:mariadb://000.00.0.0:3306/testdb1";
+        String url = "jdbc:mariadb://172.30.1.99:3306/testdb1";
         String dbUserId = "testuser1";
-        String dbPassword = "####";
+        String dbPassword = "0623";
 
         //1. 드라이버 로드
         //2. 커넥션 객체 생성
@@ -32,14 +32,22 @@ public class DbTest {
             e.printStackTrace();
         }
 
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        Statement statement = null;
+        ResultSet rs = null;
+
+        //email, kakao, facebook
+        String memberTypeValue = "email";
+
         try {
-            Connection connection = DriverManager.getConnection(url, dbUserId, dbPassword);
+            connection = DriverManager.getConnection(url, dbUserId, dbPassword);
 
-            Statement statement = connection.createStatement();
+            String sql = "select member_type, user_id, password, name " + " from member " + " where member_type = ? ";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, memberTypeValue);
 
-            String sql = "select member_type, user_id, password, name " + " from member " + " where member_type = 'email' ";
-
-            ResultSet rs = statement.executeQuery(sql);
+            rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 String memberType = rs.getString("member_type");
@@ -49,24 +57,35 @@ public class DbTest {
 
                 System.out.println(memberType + "," + userId + "," + password + "," + name);
             }
-
-            if(!rs.isClosed()) {
-                rs.close();
-            }
-
-            if (!statement.isClosed()) {
-                statement.close();
-            }
-
-            if (!connection.isClosed()) {
-                connection.close();
-            }
-
-
         } catch (SQLException e) {
             e.printStackTrace();
+
+        } finally {
+
+            try {
+                if (rs != null && !rs.isClosed()) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                if (preparedStatement != null && !preparedStatement.isClosed()) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
-
     }
 }
+
