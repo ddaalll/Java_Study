@@ -15,9 +15,9 @@ public class DbTest {
         //4. 패스워드
         //5. 인스턴스
 
-        String url = "jdbc:mariadb://172.30.1.99:3306/testdb1";
+        String url = "jdbc:mariadb://000.00.0.0:3306/testdb1";
         String dbUserId = "testuser1";
-        String dbPassword = "0623";
+        String dbPassword = "####";
 
         //1. 드라이버 로드
         //2. 커넥션 객체 생성
